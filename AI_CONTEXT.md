@@ -23,3 +23,12 @@ This project follows the "Vibe Coding" philosophy.
     - Requires a custom `User-Agent` header to avoid 401 Unauthorized errors.
     - Use `Authorization: Bearer <token>` header for requests (token in `.env.local`).
     - XML Parsing: The `name` field in `thing` items can be an array or object; schemas must handle both.
+
+## Branching Strategy
+- **Main Branch**: `main` (Production-ready code).
+- **Feature Branches**: `feat/<feature-name>` (e.g., `feat/scraper`, `feat/card-ui`).
+- **Workflow**:
+    1. Create feature branch from `main`.
+    2. Implement and verify.
+    3. Merge to `main` upon completion of the specific task/milestone.
+    4. Delete feature branch.
