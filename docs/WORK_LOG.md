@@ -18,6 +18,21 @@ This document tracks the progress of the project, listing changes made for each 
 
 ---
 
+## [2025-11-24] Implement Sheet Preview
+
+**Branch**: `feat/sheet-preview`
+
+### Changes Made
+- **Components**: Added `SheetPreview` and `CropMarks`.
+- **Pages**: Created `/print` route and updated `/collection` with selection logic.
+- **Workflow**: Users can now select games and generate a printable sheet.
+
+### Verification
+- Verified API endpoints.
+- Browser verification of print layout (manual check recommended due to subagent timeouts).
+
+---
+
 ## [2025-11-24] Build Card Components
 
 **Branch**: `feat/card-components`

@@ -31,8 +31,8 @@ export default function CollectionPage() {
         return;
       }
 
-      // 2. Extract IDs (limit to 5 for now to avoid massive requests)
-      const ids = collectionList.slice(0, 5).map((item: any) => item.objectid).join(",");
+      // 2. Extract IDs (limit to 50 for now)
+      const ids = collectionList.slice(0, 50).map((item: any) => item.objectid).join(",");
 
       // 3. Fetch Thing Details
       const thingsRes = await fetch(`/api/bgg/thing?id=${ids}`);
@@ -113,9 +113,34 @@ export default function CollectionPage() {
     }
   };
 
+  const [selectedGames, setSelectedGames] = useState<Set<string>>(new Set());
+
+  const toggleSelection = (id: string) => {
+    const newSelection = new Set(selectedGames);
+    if (newSelection.has(id)) {
+      newSelection.delete(id);
+    } else {
+      newSelection.add(id);
+    }
+    setSelectedGames(newSelection);
+  };
+
+  const handlePrint = () => {
+    if (selectedGames.size === 0) return;
+    const ids = Array.from(selectedGames).join(",");
+    window.open(`/print?ids=${ids}`, "_blank");
+  };
+
   return (
     <div className="container mx-auto p-4 bg-muted/20 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-primary">My Collection</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-primary">My Collection</h1>
+        {selectedGames.size > 0 && (
+          <Button onClick={handlePrint} className="bg-accent text-accent-foreground hover:bg-accent/90">
+            Print Selected ({selectedGames.size})
+          </Button>
+        )}
+      </div>
 
       <div className="flex gap-4 mb-8">
         <Input
@@ -133,9 +158,22 @@ export default function CollectionPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {games.map((game) => (
-          <div key={game.id} className="flex flex-col gap-4 items-center">
+          <div key={game.id} className="flex flex-col gap-4 items-center relative">
+            {/* Selection Checkbox */}
+            <div className="absolute top-2 right-2 z-20">
+              <input
+                type="checkbox"
+                checked={selectedGames.has(game.id)}
+                onChange={() => toggleSelection(game.id)}
+                className="w-6 h-6 accent-primary cursor-pointer shadow-md"
+              />
+            </div>
+
             {/* Card Front */}
-            <div className="relative group perspective-1000">
+            <div
+              className={`relative group perspective-1000 cursor-pointer ${selectedGames.has(game.id) ? 'ring-4 ring-primary rounded-[3mm]' : ''}`}
+              onClick={() => toggleSelection(game.id)}
+            >
               <CardFront game={game} className="shadow-xl transition-transform hover:scale-105 duration-300" />
             </div>
             {/* Card Back Preview (Optional, maybe on flip or separate) */}
