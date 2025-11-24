@@ -18,6 +18,20 @@ This document tracks the progress of the project, listing changes made for each 
 
 ---
 
+## [2025-11-24] Implement Puppeteer PDF Export
+
+**Branch**: `feat/pdf-export`
+
+### Changes Made
+- **API**: Created `/api/print/pdf` using Puppeteer.
+- **UI**: Added "Download PDF" button to `/print` page.
+- **Dependencies**: Installed `puppeteer`.
+
+### Verification
+- Verified API with `curl` (generated valid PDF).
+
+---
+
 ## [2025-11-24] Fix Bleed and Crop Marks
 
 **Branch**: `fix/bleed-and-marks`

@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { SheetPreview } from "@/components/print/SheetPreview";
 import { GameData } from "@/components/card/CardFront";
 import { Button } from "@/components/ui/button";
-import { Printer } from "lucide-react";
+import { Printer, Download } from "lucide-react";
 
 function PrintPageContent() {
   const searchParams = useSearchParams();
@@ -87,6 +87,11 @@ function PrintPageContent() {
     fetchGames();
   }, [ids]);
 
+  const handleDownloadPdf = () => {
+    if (!ids) return;
+    window.location.href = `/api/print/pdf?ids=${ids}`;
+  };
+
   if (loading) return <div className="p-10 text-center">Loading print preview...</div>;
   if (error) return <div className="p-10 text-center text-red-500">Error: {error}</div>;
   if (games.length === 0) return <div className="p-10 text-center">No games selected.</div>;
@@ -101,10 +106,16 @@ function PrintPageContent() {
     <div className="min-h-screen bg-gray-100 p-8 print:p-0 print:bg-white">
       <div className="mb-8 flex justify-between items-center max-w-[210mm] mx-auto print:hidden">
         <h1 className="text-2xl font-bold">Print Preview</h1>
-        <Button onClick={() => window.print()} className="gap-2">
-          <Printer className="w-4 h-4" />
-          Print
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleDownloadPdf} variant="outline" className="gap-2">
+            <Download className="w-4 h-4" />
+            Download PDF
+          </Button>
+          <Button onClick={() => window.print()} className="gap-2">
+            <Printer className="w-4 h-4" />
+            Print
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-8 print:block">
