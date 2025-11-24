@@ -2,6 +2,26 @@
 
 This document tracks the progress of the project, listing changes made for each major step/commit.
 
+## [2025-11-21] Implement Short Description Scraper & Basic UI
+
+**Branch**: `feat/scraper`
+
+### Changes Made
+- **Scraper (`src/lib/scraper.ts`)**:
+    - Uses `cheerio` to scrape meta descriptions from BGG game pages.
+    - Implements in-memory caching with `lru-cache` (90-day TTL).
+- **API**:
+    - Added `/api/bgg/description` endpoint.
+- **UI**:
+    - Added `/collection` page to list games and test description fetching.
+    - Installed `shadcn/ui` components (`button`, `input`, `card`).
+
+### Verification
+- Verified with `scripts/test-scraper.ts` (cache hits confirmed).
+- Verified UI with Browser Subagent (screenshots captured).
+
+---
+
 ## [2025-11-21] Implement BGG API Proxy
 
 **Commit**: `694f84e` - feat: Implement BGG API client with Zod schemas and Next.js API routes...
