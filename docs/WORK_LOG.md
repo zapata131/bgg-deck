@@ -18,6 +18,20 @@ This document tracks the progress of the project, listing changes made for each 
 
 ---
 
+## [2025-11-24] Fix Bleed and Crop Marks
+
+**Branch**: `fix/bleed-and-marks`
+
+### Changes Made
+- **Bleed**: Added 2mm bleed per side to cards.
+- **Gutters**: Added 4mm gap between cards in the print sheet.
+- **Crop Marks**: Adjusted offsets to avoid overlap.
+
+### Verification
+- Manual verification of print layout via `/print` route.
+
+---
+
 ## [2025-11-24] Implement Sheet Preview
 
 **Branch**: `feat/sheet-preview`
