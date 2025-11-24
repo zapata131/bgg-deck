@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CardFront, GameData } from "@/components/card/CardFront";
-import { CardBack } from "@/components/card/CardBack";
 
 export default function CollectionPage() {
   const [username, setUsername] = useState("zapata131");
@@ -32,7 +31,7 @@ export default function CollectionPage() {
       }
 
       // 2. Extract IDs (limit to 50 for now)
-      const ids = collectionList.slice(0, 50).map((item: any) => item.objectid).join(",");
+      const ids = collectionList.slice(0, 50).map((item: { objectid: string }) => item.objectid).join(",");
 
       // 3. Fetch Thing Details
       const thingsRes = await fetch(`/api/bgg/thing?id=${ids}`);
@@ -46,38 +45,49 @@ export default function CollectionPage() {
       const thingsList = Array.isArray(thingsItems) ? thingsItems : [thingsItems];
 
       // 4. Map to GameData
-      const mappedGames: GameData[] = thingsList.map((item: any) => {
+      const mappedGames: GameData[] = thingsList.map((item: {
+        id: string;
+        name: { value: string } | { value: string }[];
+        image: string;
+        yearpublished: { value: string | number };
+        minplayers: { value: string | number };
+        maxplayers: { value: string | number };
+        playingtime: { value: string | number };
+        statistics?: { ratings?: { averageweight?: { value: number } } };
+        link: { type: string; value: string } | { type: string; value: string }[];
+      }) => {
         // Helper to get value from { value: ... } objects
-        const val = (obj: any) => obj?.value;
-        const listVal = (arr: any) => {
+        const val = (obj: { value: string | number } | undefined) => obj?.value;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const listVal = (arr: { value: string } | { value: string }[] | undefined) => {
           if (!arr) return [];
           const list = Array.isArray(arr) ? arr : [arr];
-          return list.map((i: any) => i.value);
+          return list.map((i: { value: string }) => i.value);
         };
 
         // Extract Name (primary)
         let name = "Unknown";
         if (Array.isArray(item.name)) {
-          const primary = item.name.find((n: any) => n.type === "primary");
-          name = primary ? primary.value : item.name[0].value;
+          const primary = (item.name as { type: string; value: string }[]).find((n) => n.type === "primary");
+          name = primary ? primary.value : (item.name as { value: string }[])[0].value;
         } else {
-          name = item.name.value;
+          name = (item.name as { value: string }).value;
         }
 
         // Extract Credits
         const links = Array.isArray(item.link) ? item.link : [item.link];
-        const designers = links.filter((l: any) => l.type === "boardgamedesigner").map((l: any) => l.value);
-        const artists = links.filter((l: any) => l.type === "boardgameartist").map((l: any) => l.value);
+        const designers = links.filter((l: { type: string; value: string }) => l.type === "boardgamedesigner").map((l: { value: string }) => l.value);
+        const artists = links.filter((l: { type: string; value: string }) => l.type === "boardgameartist").map((l: { value: string }) => l.value);
 
         return {
           id: item.id,
           name: name,
           image: item.image,
-          yearpublished: val(item.yearpublished),
-          minplayers: val(item.minplayers),
-          maxplayers: val(item.maxplayers),
-          playingtime: val(item.playingtime),
-          averageweight: item.statistics?.ratings?.averageweight?.value,
+          yearpublished: Number(val(item.yearpublished)) || undefined,
+          minplayers: Number(val(item.minplayers)) || undefined,
+          maxplayers: Number(val(item.maxplayers)) || undefined,
+          playingtime: Number(val(item.playingtime)) || undefined,
+          averageweight: Number(item.statistics?.ratings?.averageweight?.value) || undefined,
           designers: designers.slice(0, 2), // Limit to 2
           artists: artists.slice(0, 2),
         };
@@ -88,8 +98,12 @@ export default function CollectionPage() {
       // 5. Fetch Descriptions (Lazy)
       mappedGames.forEach((game) => fetchDescription(game.id));
 
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }

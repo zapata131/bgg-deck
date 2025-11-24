@@ -18,10 +18,11 @@ export async function GET(request: NextRequest) {
     console.log(`[API] Fetching things for IDs: ${ids}`);
     const data = await fetchBggThing(idList);
     return NextResponse.json(data);
-  } catch (error: any) {
-    console.error("[API] BGG API Error:", error);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("Failed to fetch things:", message);
     return NextResponse.json(
-      { error: "Failed to fetch game details", details: error.message },
+      { error: "Failed to fetch things", details: message },
       { status: 500 }
     );
   }

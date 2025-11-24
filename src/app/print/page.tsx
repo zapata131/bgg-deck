@@ -31,30 +31,40 @@ function PrintPageContent() {
         const thingsList = Array.isArray(thingsItems) ? thingsItems : [thingsItems];
 
         // 2. Map to GameData (Reuse logic from CollectionPage - ideally refactor to util)
-        const mappedGames: GameData[] = thingsList.map((item: any) => {
-          const val = (obj: any) => obj?.value;
+        const mappedGames: GameData[] = thingsList.map((item: {
+          id: string;
+          name: { value: string } | { value: string }[];
+          image: string;
+          yearpublished: { value: string | number };
+          minplayers: { value: string | number };
+          maxplayers: { value: string | number };
+          playingtime: { value: string | number };
+          statistics?: { ratings?: { averageweight?: { value: number } } };
+          link: { type: string; value: string } | { type: string; value: string }[];
+        }) => {
+          const val = (obj: { value: string | number } | undefined) => obj?.value;
 
           let name = "Unknown";
           if (Array.isArray(item.name)) {
-            const primary = item.name.find((n: any) => n.type === "primary");
-            name = primary ? primary.value : item.name[0].value;
+            const primary = (item.name as { type: string; value: string }[]).find((n) => n.type === "primary");
+            name = primary ? primary.value : (item.name as { value: string }[])[0].value;
           } else {
-            name = item.name.value;
+            name = (item.name as { value: string }).value;
           }
 
           const links = Array.isArray(item.link) ? item.link : [item.link];
-          const designers = links.filter((l: any) => l.type === "boardgamedesigner").map((l: any) => l.value);
-          const artists = links.filter((l: any) => l.type === "boardgameartist").map((l: any) => l.value);
+          const designers = links.filter((l: { type: string; value: string }) => l.type === "boardgamedesigner").map((l: { value: string }) => l.value);
+          const artists = links.filter((l: { type: string; value: string }) => l.type === "boardgameartist").map((l: { value: string }) => l.value);
 
           return {
             id: item.id,
             name: name,
             image: item.image,
-            yearpublished: val(item.yearpublished),
-            minplayers: val(item.minplayers),
-            maxplayers: val(item.maxplayers),
-            playingtime: val(item.playingtime),
-            averageweight: item.statistics?.ratings?.averageweight?.value,
+            yearpublished: Number(val(item.yearpublished)) || undefined,
+            minplayers: Number(val(item.minplayers)) || undefined,
+            maxplayers: Number(val(item.maxplayers)) || undefined,
+            playingtime: Number(val(item.playingtime)) || undefined,
+            averageweight: Number(item.statistics?.ratings?.averageweight?.value) || undefined,
             designers: designers.slice(0, 2),
             artists: artists.slice(0, 2),
           };
@@ -77,8 +87,12 @@ function PrintPageContent() {
           }
         });
 
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }

@@ -49,10 +49,11 @@ export async function GET(request: NextRequest) {
         "Content-Disposition": `attachment; filename="bgg-deck-sheet.pdf"`,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[PDF] Generation Error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to generate PDF", details: error.message },
+      { error: "Failed to generate PDF", details: message },
       { status: 500 }
     );
   }

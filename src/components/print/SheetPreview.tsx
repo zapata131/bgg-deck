@@ -17,7 +17,7 @@ export function SheetPreview({ cards }: SheetPreviewProps) {
 
   // Bleed & Gutters
   const BLEED = 2; // 2mm bleed per side
-  const GUTTER = BLEED * 2; // 4mm spacing between cards
+  // const GUTTER = BLEED * 2; // 4mm spacing between cards (Unused)
 
   // Total size of a "cell" in the grid (Trim + Bleed)
   // Actually, we want the grid gap to handle the bleed area?
