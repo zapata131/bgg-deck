@@ -15,12 +15,13 @@ export async function GET(request: NextRequest) {
   const idList = ids.split(",");
 
   try {
+    console.log(`[API] Fetching things for IDs: ${ids}`);
     const data = await fetchBggThing(idList);
     return NextResponse.json(data);
-  } catch (error) {
-    console.error("BGG API Error:", error);
+  } catch (error: any) {
+    console.error("[API] BGG API Error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch game details" },
+      { error: "Failed to fetch game details", details: error.message },
       { status: 500 }
     );
   }

@@ -2,6 +2,38 @@
 
 This document tracks the progress of the project, listing changes made for each major step/commit.
 
+## [2025-11-24] Build Card Components
+
+**Branch**: `feat/card-components`
+
+### Changes Made
+- **Components**: Created `CardFront`, `CardBack`, `CardContainer`.
+- **Styling**: Updated `globals.css` with custom color palette.
+- **UI**: Updated `/collection` to fetch full game details and render cards.
+- **API**: Verified batch fetching logic.
+
+### Verification
+- Verified API with `curl` and debug script.
+- Browser verification attempted (timeout issues, but API confirmed working).
+
+---
+
+## [2025-11-24] Build Card Components
+
+**Branch**: `feat/card-components`
+
+### Changes Made
+- **Components**: Created `CardFront`, `CardBack`, `CardContainer`.
+- **Styling**: Updated `globals.css` with custom color palette.
+- **UI**: Updated `/collection` to fetch full game details and render cards.
+- **API**: Verified batch fetching logic.
+
+### Verification
+- Verified API with `curl` and debug script.
+- Verified UI with Browser Subagent (screenshots captured).
+
+---
+
 ## [2025-11-21] Implement Short Description Scraper & Basic UI
 
 **Branch**: `feat/scraper`
