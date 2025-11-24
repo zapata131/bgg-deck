@@ -18,6 +18,19 @@ This document tracks the progress of the project, listing changes made for each 
 
 ---
 
+## [2025-11-24] Setup CI
+
+**Branch**: `chore/ci-setup`
+
+### Changes Made
+- **CI**: Added GitHub Actions workflow for build and lint checks.
+- **Linting**: Fixed numerous `any` type errors and unused variables to ensure a clean build.
+
+### Verification
+- Verified `npm run lint` and `npm run build` pass locally.
+
+---
+
 ## [2025-11-24] Implement Puppeteer PDF Export
 
 **Branch**: `feat/pdf-export`
