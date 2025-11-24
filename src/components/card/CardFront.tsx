@@ -19,11 +19,12 @@ export interface GameData {
 interface CardFrontProps {
   game: GameData;
   className?: string;
+  bleed?: boolean;
 }
 
-export function CardFront({ game, className }: CardFrontProps) {
+export function CardFront({ game, className, bleed = false }: CardFrontProps) {
   return (
-    <CardContainer className={cn("bg-white", className)}>
+    <CardContainer className={cn("bg-white", className)} bleed={bleed}>
       {/* Top Half: Image */}
       <div className="h-[55%] w-full relative bg-muted overflow-hidden">
         {game.image ? (
