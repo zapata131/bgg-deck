@@ -124,9 +124,13 @@ function getHeaders() {
   };
 }
 
-export async function fetchBggCollection(username: string) {
+export async function fetchBggCollection(username: string, options?: { force?: boolean }) {
   const url = `${BGG_API_BASE}/collection?username=${username}&own=1&excludesubtype=boardgameexpansion`;
-  const res = await fetch(url, { headers: getHeaders() });
+  const fetchOptions: RequestInit = {
+    headers: getHeaders(),
+    ...(options?.force ? { cache: 'no-store' } : {}),
+  };
+  const res = await fetch(url, fetchOptions);
   if (!res.ok) {
     throw new Error(`Failed to fetch collection: ${res.statusText}`);
   }

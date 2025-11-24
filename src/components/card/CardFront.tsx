@@ -57,20 +57,20 @@ export function CardFront({ game, className, bleed = false }: CardFrontProps) {
 
       {/* Stats Bar */}
       <div className="h-[12%] bg-primary text-white flex items-center justify-between px-4 text-xs font-bold shadow-sm z-10">
-        <div className="flex items-center gap-1">
-          <Users className="w-3.5 h-3.5 opacity-80" />
+        <div className="flex items-center gap-1" aria-label={`Players: ${game.minplayers === game.maxplayers ? game.minplayers : `${game.minplayers}-${game.maxplayers}`}`}>
+          <Users className="w-3.5 h-3.5 opacity-80" aria-hidden="true" />
           <span>
             {game.minplayers === game.maxplayers
               ? game.minplayers
               : `${game.minplayers}-${game.maxplayers}`}
           </span>
         </div>
-        <div className="flex items-center gap-1">
-          <Clock className="w-3.5 h-3.5 opacity-80" />
+        <div className="flex items-center gap-1" aria-label={`Playing time: ${game.playingtime} minutes`}>
+          <Clock className="w-3.5 h-3.5 opacity-80" aria-hidden="true" />
           <span>{game.playingtime}m</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Dumbbell className="w-3.5 h-3.5 opacity-80" />
+        <div className="flex items-center gap-1" aria-label={`Weight: ${game.averageweight?.toFixed(1) || "Unknown"}`}>
+          <Dumbbell className="w-3.5 h-3.5 opacity-80" aria-hidden="true" />
           <span>{game.averageweight?.toFixed(1) || "-"}</span>
         </div>
       </div>

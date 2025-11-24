@@ -6,8 +6,10 @@ import { SheetPreview } from "@/components/print/SheetPreview";
 import { GameData } from "@/components/card/CardFront";
 import { Button } from "@/components/ui/button";
 import { Printer, Download } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 function PrintPageContent() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const ids = searchParams.get("ids");
   const [games, setGames] = useState<GameData[]>([]);
@@ -106,9 +108,9 @@ function PrintPageContent() {
     window.location.href = `/api/print/pdf?ids=${ids}`;
   };
 
-  if (loading) return <div className="p-10 text-center">Loading print preview...</div>;
+  if (loading) return <div className="p-10 text-center">{t("print.loading")}</div>;
   if (error) return <div className="p-10 text-center text-red-500">Error: {error}</div>;
-  if (games.length === 0) return <div className="p-10 text-center">No games selected.</div>;
+  if (games.length === 0) return <div className="p-10 text-center">{t("print.no_selection")}</div>;
 
   // Pagination: Split into chunks of 9
   const chunks = [];
@@ -119,15 +121,15 @@ function PrintPageContent() {
   return (
     <div className="min-h-screen bg-gray-100 p-8 print:p-0 print:bg-white">
       <div className="mb-8 flex justify-between items-center max-w-[210mm] mx-auto print:hidden">
-        <h1 className="text-2xl font-bold">Print Preview</h1>
+        <h1 className="text-2xl font-bold">{t("print.title")}</h1>
         <div className="flex gap-2">
           <Button onClick={handleDownloadPdf} variant="outline" className="gap-2">
             <Download className="w-4 h-4" />
-            Download PDF
+            {t("print.download_pdf")}
           </Button>
           <Button onClick={() => window.print()} className="gap-2">
             <Printer className="w-4 h-4" />
-            Print
+            {t("print.print")}
           </Button>
         </div>
       </div>

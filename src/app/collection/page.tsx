@@ -4,20 +4,23 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CardFront, GameData } from "@/components/card/CardFront";
+import { useI18n } from "@/lib/i18n";
+import { RefreshCw } from "lucide-react";
 
 export default function CollectionPage() {
+  const { t, language, setLanguage } = useI18n();
   const [username, setUsername] = useState("zapata131");
   const [games, setGames] = useState<GameData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCollection = async () => {
+  const fetchCollection = async (force = false) => {
     setLoading(true);
     setError(null);
     setGames([]);
     try {
       // 1. Fetch Collection to get IDs
-      const res = await fetch(`/api/bgg/collection?username=${username}`);
+      const res = await fetch(`/api/bgg/collection?username=${username}${force ? "&force=true" : ""}`);
       if (!res.ok) throw new Error("Failed to fetch collection");
       const data = await res.json();
 
@@ -148,23 +151,36 @@ export default function CollectionPage() {
   return (
     <div className="container mx-auto p-4 bg-muted/20 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-primary">My Collection</h1>
-        {selectedGames.size > 0 && (
-          <Button onClick={handlePrint} className="bg-accent text-accent-foreground hover:bg-accent/90">
-            Print Selected ({selectedGames.size})
+        <h1 className="text-3xl font-bold text-primary">{t("collection.title")}</h1>
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
+            className="text-xs"
+          >
+            {language === 'en' ? 'ES' : 'EN'}
           </Button>
-        )}
+          {selectedGames.size > 0 && (
+            <Button onClick={handlePrint} className="bg-accent text-accent-foreground hover:bg-accent/90">
+              {t("collection.print_selected")} ({selectedGames.size})
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-4 mb-8">
         <Input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="BGG Username"
+          placeholder={t("collection.username_placeholder")}
           className="max-w-xs bg-white"
         />
-        <Button onClick={fetchCollection} disabled={loading} className="bg-primary hover:bg-primary/90 text-white">
-          {loading ? "Loading..." : "Fetch Collection"}
+        <Button onClick={() => fetchCollection(false)} disabled={loading} className="bg-primary hover:bg-primary/90 text-white">
+          {loading ? t("collection.loading") : t("collection.fetch")}
+        </Button>
+        <Button onClick={() => fetchCollection(true)} disabled={loading} variant="outline" title={t("collection.refresh")}>
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </Button>
       </div>
 
@@ -180,6 +196,7 @@ export default function CollectionPage() {
                 checked={selectedGames.has(game.id)}
                 onChange={() => toggleSelection(game.id)}
                 className="w-6 h-6 accent-primary cursor-pointer shadow-md"
+                aria-label={`Select ${game.name}`}
               />
             </div>
 
@@ -187,6 +204,14 @@ export default function CollectionPage() {
             <div
               className={`relative group perspective-1000 cursor-pointer ${selectedGames.has(game.id) ? 'ring-4 ring-primary rounded-[3mm]' : ''}`}
               onClick={() => toggleSelection(game.id)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  toggleSelection(game.id);
+                }
+              }}
+              aria-pressed={selectedGames.has(game.id)}
             >
               <CardFront game={game} className="shadow-xl transition-transform hover:scale-105 duration-300" />
             </div>

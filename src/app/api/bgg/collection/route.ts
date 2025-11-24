@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const username = searchParams.get("username");
+  const force = searchParams.get("force") === "true";
 
   if (!username) {
     return NextResponse.json(
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const data = await fetchBggCollection(username);
+    const data = await fetchBggCollection(username, { force });
 
     if ('status' in data && data.status === 202) {
       return NextResponse.json(data, { status: 202 });
